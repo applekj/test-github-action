@@ -11,7 +11,7 @@ jobs:
       uses: actions/checkout@master
 
     - name: Build and Deploy
-      uses: JamesIves/github-pages-deploy-action@master
+      uses: applekj/test-github-action@master
       env:
         ACCESS_TOKEN: ${{ secrets.ci }}
         BRANCH: gh-pages
