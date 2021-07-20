@@ -15,8 +15,30 @@ jobs:
       uses: actions/setup-node@v1 # 配置脚本来自 https://github.com/actions/setup-node
       with:
         node-version: "10.x"
+    
+    - name: Setup Hexo env
       env:
-        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-        BRANCH: gh-pages
-        FOLDER: build
+        ACTION_DEPLOY_KEY: ${{ secrets.ACTION_DEPLOY_KEY }}
+      run: |
+        # set up private key for deploy
+        mkdir -p ~/.ssh/
+        echo "$ACTION_DEPLOY_KEY" | tr -d '\r' > ~/.ssh/id_rsa # 配置秘钥
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan github.com >> ~/.ssh/known_hosts
+        # set git infomation
+        git config --global user.name 'yanjingjie' # 换成你自己的邮箱和名字
+        git config --global user.email 'yanjingjie86@126.com'
+        # install dependencies
+        npm i -g hexo-cli # 安装hexo
+        npm i
+  
+    - name: Deploy
+      run: |
+        # publish
+        hexo generate && hexo deploy # 执行部署程序
+
+#       env:
+#         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+#         BRANCH: gh-pages
+#         FOLDER: build
         BUILD_SCRIPT: npm install && npm run build
